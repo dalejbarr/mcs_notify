@@ -1,0 +1,9 @@
+#+TITLE: mcs_notify: A notification system for Minecraft Servers
+
+* Background
+
+TO_DO
+
+* Usage
+
+TO_DO
