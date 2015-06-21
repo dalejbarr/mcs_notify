@@ -10,16 +10,27 @@ The scripts run under bash on *-nix systems, and have been tested on Ubuntu Linu
 
 - a minecraft server running locally
 - an OS with ability to parse =bash= scripts
-- [[http://curl.haxx.se][curl]], a library for posting web requests; on ubuntu, install using 
-#+BEGIN_SRC sh
-sudo apt-get install curl
-#+END_SRC
+- [[http://curl.haxx.se][curl]], a library for posting web requests; on ubuntu, install using =sudo apt-get install curl=
+- for any users wishing to receive notifications:
+  - Minecraft in-game user name and [[https://ifttt.com/maker][IFTTT Maker Channel secret key]]
 
 ** How it works
 
-The main script =exec_when_changed.sh= monitors the activity of a server log, and when it detects changes, the latest output is piped into =process_output.sh=, which parses the text for particular events.  When a desired event is detected (e.g., player logs in), it pipes the message text to the =notify.sh= script, which POSTS a web request to IFTTT.  Currently, =notify.sh= only watches for player login/logout events, but you can modify the =notify.sh= script to watch for other types of events.
+The main script =exec_when_changed.sh= monitors the activity of a server log.  The minecraft server logs events as they happen to the file =[your_server_directory]/logs/latest.log=.  When the =exec_when_changed.sh= script detects changes, it pipes the latest output into =process_output.sh=, which parses the text for particular events.  When a desired event is detected (e.g., player logs in), it pipes the message text to the =notify.sh= script, which POSTS a web request to IFTTT.  Currently, =notify.sh= only watches for player login/logout events, but you can modify the =notify.sh= script to watch for other types of events.
 
-Events on the minecraft server are logged as they happen to the file =logs/latest.log=.  A logical place to put the =mcs_notify= directory is as a sub-directory of your minecraft server directory.  Then, after starting up a server instance, invoke the following command to start monitoring the server log:
+You will need to create a custom =player_keys= file and save it in the directory with the other =mcs_notify= files.  When the =notify.sh= script is triggered, it reads in data from =player_keys= to determine the web requests that needs to be sent.  Each person who wishes to receive notifications about server events needs to have a separate line in this file.  Each line is of the format:
+
+#+BEGIN_EXAMPLE
+[minecraft_in_game_user_name] [IFTTT secret key]
+#+END_EXAMPLE
+
+So, for example, the player named =Herobrine_XXX= with IFTTT key 3xjjf318-D1ffo would appear in the file as:
+
+#+BEGIN_EXAMPLE
+Herobrine_XXX 3xjjf318-D1ffo
+#+END_EXAMPLE
+
+A logical place to put the =mcs_notify= directory is as a sub-directory of your minecraft server directory.  Then, after starting up a server instance, invoke the following command to start monitoring the server log:
 
 #+BEGIN_SRC sh
   cd mcs_notify
