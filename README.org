@@ -2,8 +2,26 @@
 
 * Background
 
-TO_DO
+This repository provides a collection of three bash scripts that hack together notifications on the minecraft server log file (=latest.log=) to the Maker channel of [[https://ifttt.com][ifthisthenthat (IFTTT)]] so that players can receive notifications (on a mobile device, or via SMS, for example) about events on the server.  Currently only supports events related to players logging on or off of a server.
 
-* Usage
+The scripts run under bash on *-nix systems, and have been tested on Ubuntu Linux 14.04.
 
-TO_DO
+** Requirements
+
+- a minecraft server running locally
+- an OS with ability to parse =bash= scripts
+- [[http://curl.haxx.se][curl]], a library for posting web requests; on ubuntu, install using 
+#+BEGIN_SRC sh
+sudo apt-get install curl
+#+END_SRC
+
+** How it works
+
+The main script =exec_when_changed.sh= monitors the activity of a server log, and when it detects changes, the latest output is piped into =process_output.sh=, which parses the text for particular events.  When a desired event is detected (e.g., player logs in), it pipes the message text to the =notify.sh= script, which POSTS a web request to IFTTT.  Currently, =notify.sh= only watches for player login/logout events, but you can modify the =notify.sh= script to watch for other types of events.
+
+Events on the minecraft server are logged as they happen to the file =logs/latest.log=.  A logical place to put the =mcs_notify= directory is as a sub-directory of your minecraft server directory.  Then, after starting up a server instance, invoke the following command to start monitoring the server log:
+
+#+BEGIN_SRC sh
+  cd mcs_notify
+  ./exec_when_changed.sh ../logs/latest.log
+#+END_SRC
