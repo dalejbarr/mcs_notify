@@ -6,7 +6,7 @@ This repository provides a collection of three bash scripts that hack together n
 
 The scripts run under bash on *-nix systems, and have been tested on Ubuntu Linux 14.04.
 
-** Requirements
+* Requirements
 
 - a minecraft server running locally
 - an OS with ability to parse =bash= scripts
@@ -14,7 +14,7 @@ The scripts run under bash on *-nix systems, and have been tested on Ubuntu Linu
 - for any users wishing to receive notifications:
   - Minecraft in-game user name and [[https://ifttt.com/maker][IFTTT Maker Channel secret key]]
 
-** How it works
+* How it works
 
 The main script =exec_when_changed.sh= monitors the activity of a server log.  The minecraft server logs events as they happen to the file =[your_server_directory]/logs/latest.log=.  When the =exec_when_changed.sh= script detects changes, it pipes the latest output into =process_output.sh=, which parses the text for particular events.  When a desired event is detected (e.g., player logs in), it pipes the message text to the =notify.sh= script, which POSTS a web request to IFTTT.  Currently, =notify.sh= only watches for player login/logout events, but you can modify the =notify.sh= script to watch for other types of events.
 
@@ -29,6 +29,8 @@ So, for example, the player named =Herobrine_XXX= with IFTTT key 3xjjf318-D1ffo 
 #+BEGIN_EXAMPLE
 Herobrine_XXX 3xjjf318-D1ffo
 #+END_EXAMPLE
+
+Any player wishing to set up notifications through IFTTT will need to create a Maker Trigger Channel to receive the web event =player_login=.  The message is passed through ={{Value 1}}= of the JSON payload.
 
 A logical place to put the =mcs_notify= directory is as a sub-directory of your minecraft server directory.  Then, after starting up a server instance, invoke the following command to start monitoring the server log:
 
